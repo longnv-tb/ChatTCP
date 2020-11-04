@@ -20,7 +20,7 @@ public class ClientView extends javax.swing.JFrame {
     private final Socket socket;
     private final User user; /*sender*/
     private final DefaultListModel dlm;
-    private String uname=""; /*receiver*/
+    private String receiver="";
     private DataOutputStream dos;
     /**
      * Creates new form ClientView
@@ -262,10 +262,10 @@ public class ClientView extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        String message = jTextField1.getText().trim();
-        String userName = uname; /*username of receiver*/
-        if(!userName.isEmpty()){
-            try {
+        try {
+            String message = jTextField1.getText().trim();
+            String userName = receiver; 
+            if(!userName.isEmpty()){
                 /*
                 request = @@:=userName of sender:username of receiver:message
                 */
@@ -274,30 +274,27 @@ public class ClientView extends javax.swing.JFrame {
                 dos.writeUTF(request);
                 jTextField1.setText("");
                 jTextArea1.append("<You to "+userName+">: "+message+"\n");
-            } catch (IOException ex) {
-                Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
+            }else{
+                dos.writeUTF(message);
+                jTextField1.setText("");
+                jTextArea1.append("<You to All>: "+message+"\n");
             }
-            
+        }catch (IOException ex) {
+                Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        receiver = "";
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
         // TODO add your handling code here:
-        uname = jList1.getSelectedValue();
+        receiver = jList1.getSelectedValue();
     }//GEN-LAST:event_jList1ValueChanged
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-//        if(jList1.getSelectedValuesList().isEmpty()){
-//            JOptionPane.showMessageDialog(null,"Chưa chọn người");
-//        }else{
-//            new ChatGroupView(jList1.getSelectedValuesList()).setVisible(true);
-//        }
-          new SelectPeopleView(dlm.toArray()).setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**

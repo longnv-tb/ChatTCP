@@ -9,6 +9,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,6 +49,16 @@ public class ReadMessageThread extends Thread{
                     String message = st.nextToken();
                     new DataOutputStream(((Socket)serverView.getClientCollection().get(userNameReceiver)).getOutputStream())
                             .writeUTF("<"+sender.getUserName()+"> to <"+userNameReceiver+">: "+message);
+                }else{
+                    Set setUserName = serverView.getClientCollection().keySet();
+                    Iterator iterator = setUserName.iterator();
+                    while(iterator.hasNext()){
+                        String userName = (String) iterator.next();
+                        if(!userName.equalsIgnoreCase(sender.getUserName())){
+                            new DataOutputStream(((Socket)serverView.getClientCollection().get(userName)).getOutputStream()).writeUTF("<"+sender.getUserName()+" to ALL >"+request);
+                        }
+                    }
+                    
                 }
             } catch (IOException ex) {
                 Logger.getLogger(ReadMessageThread.class.getName()).log(Level.SEVERE, null, ex);
