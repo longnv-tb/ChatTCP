@@ -5,12 +5,15 @@
  */
 package ClientThread;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Message;
 import view.ClientView;
 
 /**
@@ -31,29 +34,40 @@ public class ReadMessage extends Thread{
     public void run(){
         while(true){
             try {
-                String response = new DataInputStream(socket.getInputStream()).readUTF();
-                System.out.println(response);
+                Message message = (Message) new ObjectInputStream(socket.getInputStream()).readObject();
+                System.out.println(message);
                 /*nếu là chuỗi thông báo client mới*/
-                if(response.contains("new:=")){
-                    response = response.substring(5);
+                if(message.getType().equalsIgnoreCase("new")){
                     clientView.clearList();
-                    
-                    /*tách chuỗi nhận được: response(client) = new:=strUserName(server)*/
-                    StringTokenizer st = new StringTokenizer(response,",");
+                    String str = message.getUserNameOfReceiver();
+                    System.out.println(str);
+                    StringTokenizer st = new StringTokenizer(str,",");
                     while(st.hasMoreTokens()){
-                        String userName = st.nextToken();
-                        if(!userName.equalsIgnoreCase(clientView.getUser().getUserName())){
-                            clientView.addElement(userName);
+                        String key = st.nextToken();
+                        if(!key.equalsIgnoreCase(clientView.getUser().getUserName())){
+                            clientView.addElement(key);
                         }
                     }
                 }
                 /*message bình thường*/
-                else{
-                    clientView.appendChatBox(response+"\n");
+                else if(message.getType().equalsIgnoreCase("text")){
+                    String m = new String(message.getMess(),StandardCharsets.UTF_8);
+                    if(message.getUserNameOfReceiver().equalsIgnoreCase("")){
+                        clientView.appendChatBox("<"+message.getUserNameOfSender()+" to ALL>: "+m+"\n");
+                    }else
+                        clientView.appendChatBox("<"+message.getUserNameOfSender()+" to you>:"+m+"\n");
+                }else{
+                    clientView.addReceivedFile(message);
+                    if(message.getUserNameOfReceiver().equalsIgnoreCase("")){
+                        clientView.appendChatBox("<"+message.getUserNameOfSender()+" to ALL>: "+message.getType()+"\n");
+                    }else
+                        clientView.appendChatBox("<"+message.getUserNameOfSender()+" to you>:"+message.getType()+"\n");
                 }
             } catch (IOException ex) {
                 Logger.getLogger(ReadMessage.class.getName()).log(Level.SEVERE, null, ex);
                 break;
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(ReadMessage.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

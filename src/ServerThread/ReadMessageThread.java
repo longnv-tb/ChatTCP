@@ -5,15 +5,15 @@
  */
 package ServerThread;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Message;
 import model.User;
 import view.ServerView;
 
@@ -25,42 +25,38 @@ public class ReadMessageThread extends Thread{
     private final Socket socket;
     private final ServerView serverView;
     private final User sender;
-    private DataInputStream dis;
-    private DataOutputStream dos;
+    private ObjectInputStream ois;
     
-    public ReadMessageThread(Socket s, ServerView serverView, User sender) throws IOException {
+    public ReadMessageThread(Socket s, ServerView serverView, User sender, ObjectInputStream ois) throws IOException {
         this.socket = s;
         this.serverView = serverView;
         this.sender = sender;
-        dis = new DataInputStream(s.getInputStream());
+        this.ois = ois;
     }
     
     @Override
     public void run(){
         while(!serverView.getClientCollection().isEmpty()){
             try {
-                String request = dis.readUTF();
-                System.out.println(request);
+                Message message = (Message) ois.readObject();
                 /*yêu cầu gửi cá nhân*/
-                if(request.contains("@@:=")){
-                    request = request.substring(4); /*request= userName:message*/
-                    StringTokenizer st = new StringTokenizer(request, ":"); 
-                    String userNameReceiver = st.nextToken();
-                    String message = st.nextToken();
-                    new DataOutputStream(((Socket)serverView.getClientCollection().get(userNameReceiver)).getOutputStream())
-                            .writeUTF("<"+sender.getUserName()+"> to <"+userNameReceiver+">: "+message);
+                if(!"".equals(message.getUserNameOfReceiver())){
+                    new ObjectOutputStream(((Socket)serverView.getClientCollection().get(message.getUserNameOfReceiver())).getOutputStream())
+                            .writeObject(message);
                 }else{
                     Set setUserName = serverView.getClientCollection().keySet();
                     Iterator iterator = setUserName.iterator();
                     while(iterator.hasNext()){
                         String userName = (String) iterator.next();
                         if(!userName.equalsIgnoreCase(sender.getUserName())){
-                            new DataOutputStream(((Socket)serverView.getClientCollection().get(userName)).getOutputStream()).writeUTF("<"+sender.getUserName()+" to ALL >"+request);
+                            new ObjectOutputStream(((Socket)serverView.getClientCollection().get(userName)).getOutputStream()).writeObject(message);
                         }
                     }
                     
                 }
             } catch (IOException ex) {
+                Logger.getLogger(ReadMessageThread.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ReadMessageThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

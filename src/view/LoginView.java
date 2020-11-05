@@ -7,7 +7,6 @@ package view;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -150,7 +149,7 @@ public class LoginView extends javax.swing.JFrame {
                 }
                 else{
                     user.setName(str);
-                    new ClientView(user,socket).setVisible(true);
+                    new ClientView(user,socket,ois, oos).setVisible(true);
                     this.dispose();
                 }
 

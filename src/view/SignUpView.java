@@ -190,7 +190,7 @@ public class SignUpView extends javax.swing.JFrame {
                 String str = (String) ois.readObject();
                 if(str.equalsIgnoreCase("signupsuccess")){
                     System.out.println("success");
-                    new ClientView(user, socket).setVisible(true);
+                    new ClientView(user, socket, ois, oos).setVisible(true);
                     this.dispose();
                 }else if(str.equalsIgnoreCase("signupfailed")){
                     JOptionPane.showMessageDialog(null, "User này đã tồn tại!");

@@ -1,15 +1,23 @@
 package view;
 
 import ClientThread.ReadMessage;
+import java.awt.HeadlessException;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import model.Message;
 import model.User;
 
 /**
@@ -19,16 +27,18 @@ import model.User;
 public class ClientView extends javax.swing.JFrame {
     private final Socket socket;
     private final User user; /*sender*/
-    private final DefaultListModel dlm;
+    private final DefaultListModel dlm1;
+    private DefaultListModel dlm2;
     private String receiver="";
-    private DataOutputStream dos;
+    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
     /**
      * Creates new form ClientView
      * @param user
      * @param s
      * @throws java.io.IOException
      */
-    public ClientView(User user, Socket s) throws IOException {
+    public ClientView(User user, Socket s, ObjectInputStream ois, ObjectOutputStream oos) throws IOException {
         initComponents();
         this.addWindowListener(new WindowAdapter(){
             @Override
@@ -44,10 +54,13 @@ public class ClientView extends javax.swing.JFrame {
         });
         this.user = user;
         this.socket = s;
-        dos = new DataOutputStream(this.socket.getOutputStream());
+        this.ois = ois;
+        this.oos = oos;
         jLabelGreeting.setText(user.getName());
-        this.dlm = new DefaultListModel();
-        jList1.setModel(dlm);
+        this.dlm1 = new DefaultListModel();
+        jList1.setModel(dlm1);
+        this.dlm2 = new DefaultListModel();
+        jList2.setModel(dlm2);
         new ReadMessage(socket, ClientView.this).start();
     }
 
@@ -59,12 +72,16 @@ public class ClientView extends javax.swing.JFrame {
         this.jTextArea1.append(str);
     }
     
+    public void addReceivedFile(Message m){
+        this.dlm2.addElement(m);
+    }
+    
     public void addElement(String str){
-        this.dlm.addElement(str);
+        this.dlm1.addElement(str);
     }
     
     public void clearList(){
-        this.dlm.clear();
+        this.dlm1.clear();
     }
 
     @SuppressWarnings("unchecked")
@@ -97,6 +114,10 @@ public class ClientView extends javax.swing.JFrame {
         jList1 = new javax.swing.JList<>();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jList2 = new javax.swing.JList<>();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         jRadioButtonMenuItem1.setSelected(true);
         jRadioButtonMenuItem1.setText("jRadioButtonMenuItem1");
@@ -194,10 +215,26 @@ public class ClientView extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setText("Create group");
+        jButton3.setText("File");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
+            }
+        });
+
+        jScrollPane3.setViewportView(jList2);
+
+        jButton4.setText("Save");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setText("Open Image");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
             }
         });
 
@@ -205,32 +242,46 @@ public class ClientView extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel1)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jLabelGreeting)
-                            .addGap(12, 12, 12))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane3)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton1))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jLabelGreeting)
+                                    .addGap(12, 12, 12))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(55, 55, 55)
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton4)
+                            .addComponent(jButton5))))
+                .addContainerGap())
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButton2, jButton3});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButton4, jButton5});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -244,15 +295,24 @@ public class ClientView extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton2)
-                                .addComponent(jButton3))))
+                                .addComponent(jButton3))
+                            .addComponent(jButton2)))
                     .addComponent(jSeparator1))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jButton5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton4)
+                        .addGap(39, 39, 39))))
         );
 
         layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButton1, jButton2, jButton3, jTextField1});
@@ -264,18 +324,18 @@ public class ClientView extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
             String message = jTextField1.getText().trim();
-            String userName = receiver; 
+            String userName = receiver;
+            Message mess = new Message();
+            mess.setType("text");
+            mess.setUserNameOfReceiver(userName);
+            mess.setUserNameOfSender(user.getUserName());
+            mess.setMess(message.getBytes());
+            oos.writeObject(mess);
+            oos.flush();
             if(!userName.isEmpty()){
-                /*
-                request = @@:=userName of sender:username of receiver:message
-                */
-                String request = "@@:="+userName+":"+message;
-                System.out.println(request);
-                dos.writeUTF(request);
                 jTextField1.setText("");
                 jTextArea1.append("<You to "+userName+">: "+message+"\n");
             }else{
-                dos.writeUTF(message);
                 jTextField1.setText("");
                 jTextArea1.append("<You to All>: "+message+"\n");
             }
@@ -295,7 +355,69 @@ public class ClientView extends javax.swing.JFrame {
     }//GEN-LAST:event_jList1ValueChanged
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        try{
+            String userName = receiver;
+            JFileChooser ch = new JFileChooser();
+            int c = ch.showOpenDialog(this);
+            if (c == JFileChooser.APPROVE_OPTION) {
+                File f = ch.getSelectedFile();
+                FileInputStream in = new FileInputStream(f);
+                byte b[] = new byte[in.available()];
+                in.read(b);
+                Message m = new Message();
+                m.setType(f.getName());
+                m.setMess(b);
+                m.setUserNameOfReceiver(userName);
+                m.setUserNameOfSender(user.getUserName());
+                oos.writeObject(m);
+                oos.flush();
+                if(!userName.isEmpty()){
+                    jTextField1.setText("");
+                    jTextArea1.append("<You to "+userName+">: "+f.getName()+"\n");
+                }else{
+                    jTextField1.setText("");
+                    jTextArea1.append("<You to All>: "+f.getName()+"\n");
+                }
+            }
+        }catch(HeadlessException | IOException e){
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+        Message data = (Message) dlm2.getElementAt(jList2.getSelectedIndex());
+        JFileChooser ch = new JFileChooser();
+        int c = ch.showSaveDialog(this);
+        if (c == JFileChooser.APPROVE_OPTION) {
+            try {
+                FileOutputStream out = new FileOutputStream(ch.getSelectedFile());
+                out.write(data.getMess());
+                out.close();
+                JOptionPane.showMessageDialog(null, "Tải thành công!");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        Message data = (Message) dlm2.getElementAt(jList2.getSelectedIndex());
+        String str = data.getType();
+        StringBuilder sb = new StringBuilder(str); //.jpg
+        sb.reverse();
+        str = sb.toString().substring(0, 4);
+        if(str.equalsIgnoreCase("gpj.")){
+            ShowImage obj = new ShowImage(this, true);
+            ImageIcon icon = new ImageIcon(data.getMess());
+            obj.set(icon);
+            obj.setVisible(true);
+        }else{
+            JOptionPane.showMessageDialog(null, "Tải về để xem");
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -331,6 +453,8 @@ public class ClientView extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JDialog jDialog2;
     private javax.swing.JDialog jDialog3;
@@ -338,6 +462,7 @@ public class ClientView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabelGreeting;
     private javax.swing.JList<String> jList1;
+    private javax.swing.JList<String> jList2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -351,6 +476,7 @@ public class ClientView extends javax.swing.JFrame {
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;

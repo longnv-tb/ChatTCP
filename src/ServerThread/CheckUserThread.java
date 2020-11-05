@@ -39,7 +39,7 @@ public class CheckUserThread extends Thread{
                         oos.writeObject(u.getName());
                         serverView.getClientCollection().put(u.getUserName(), socket);
                         serverView.appendChatBox(u.getUserName()+" được kết nối!\n");
-                        new ReadMessageThread(socket, serverView, u).start();
+                        new ReadMessageThread(socket, serverView, u, ois).start();
                         new RefreshListFriend(serverView).start();
                         this.stop();
                     }
@@ -52,7 +52,7 @@ public class CheckUserThread extends Thread{
                         oos.writeObject("signupsuccess");
                         serverView.getClientCollection().put(u.getUserName(), socket);
                         serverView.appendChatBox(u.getUserName()+" được kết nối!\n");
-                        new ReadMessageThread(socket, serverView, u).start();
+                        new ReadMessageThread(socket, serverView, u,ois).start();
                         new RefreshListFriend(serverView).start();
                         this.stop();
                     }else

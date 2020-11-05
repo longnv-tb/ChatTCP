@@ -5,13 +5,14 @@
  */
 package ServerThread;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Message;
 import view.ServerView;
 
 /**
@@ -47,7 +48,8 @@ public class RefreshListFriend extends Thread{
         while(itorator.hasNext()){
             String userName = (String) itorator.next();
             try {
-                new DataOutputStream(((Socket)serverView.getClientCollection().get(userName)).getOutputStream()).writeUTF("new:="+strUserName);
+                new ObjectOutputStream(((Socket)serverView.getClientCollection().get(userName)).getOutputStream()).writeObject(new Message("new", null, strUserName));
+                System.out.println(strUserName);
             } catch (IOException ex) {
                 Logger.getLogger(RefreshListFriend.class.getName()).log(Level.SEVERE, null, ex);
             }
