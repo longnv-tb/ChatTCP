@@ -118,6 +118,7 @@ public class ClientView extends javax.swing.JFrame {
         jList2 = new javax.swing.JList<>();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
 
         jRadioButtonMenuItem1.setSelected(true);
         jRadioButtonMenuItem1.setText("jRadioButtonMenuItem1");
@@ -238,32 +239,38 @@ public class ClientView extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        jLabel2.setText("Your received files");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane3)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton5)
+                            .addComponent(jButton4)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton1))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addGroup(layout.createSequentialGroup()
                                     .addComponent(jLabel1)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(jLabelGreeting)
                                     .addGap(12, 12, 12))
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton1)))
                         .addGap(8, 8, 8)
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -272,13 +279,12 @@ public class ClientView extends javax.swing.JFrame {
                                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(55, 55, 55)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton4)
-                            .addComponent(jButton5))))
-                .addContainerGap())
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap())))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(185, 185, 185))
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButton4, jButton5});
@@ -303,16 +309,17 @@ public class ClientView extends javax.swing.JFrame {
                                 .addComponent(jButton3))
                             .addComponent(jButton2)))
                     .addComponent(jSeparator1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
                         .addComponent(jButton5)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton4)
-                        .addGap(39, 39, 39))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jButton1, jButton2, jButton3, jTextField1});
@@ -322,6 +329,10 @@ public class ClientView extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        if(jList1.isSelectionEmpty()){
+            JOptionPane.showMessageDialog(null, "Chọn người để gửi");
+            return;
+        }
         try {
             String message = jTextField1.getText().trim();
             String userName = receiver;
@@ -347,6 +358,12 @@ public class ClientView extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         receiver = "";
+        jList1.clearSelection();
+        int begin = 0;
+        int end = jList1.getModel().getSize() - 1;
+        if (end >= 0) {
+            jList1.setSelectionInterval(begin, end);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
@@ -387,36 +404,44 @@ public class ClientView extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        Message data = (Message) dlm2.getElementAt(jList2.getSelectedIndex());
-        JFileChooser ch = new JFileChooser();
-        int c = ch.showSaveDialog(this);
-        if (c == JFileChooser.APPROVE_OPTION) {
-            try {
-                FileOutputStream out = new FileOutputStream(ch.getSelectedFile());
-                out.write(data.getMess());
-                out.close();
-                JOptionPane.showMessageDialog(null, "Tải thành công!");
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
+        if(jList2.isSelectionEmpty()){
+            JOptionPane.showMessageDialog(null, "Chưa chọn gì!");
+        }else{
+            Message data = (Message) dlm2.getElementAt(jList2.getSelectedIndex());
+            JFileChooser ch = new JFileChooser();
+            int c = ch.showSaveDialog(this);
+            if (c == JFileChooser.APPROVE_OPTION) {
+                try {
+                    FileOutputStream out = new FileOutputStream(ch.getSelectedFile());
+                    out.write(data.getMess());
+                    out.close();
+                    JOptionPane.showMessageDialog(null, "Tải thành công!");
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, e, "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-        Message data = (Message) dlm2.getElementAt(jList2.getSelectedIndex());
-        String str = data.getType();
-        StringBuilder sb = new StringBuilder(str); //.jpg
-        sb.reverse();
-        str = sb.toString().substring(0, 4);
-        if(str.equalsIgnoreCase("gpj.")){
-            ShowImage obj = new ShowImage(this, true);
-            ImageIcon icon = new ImageIcon(data.getMess());
-            obj.set(icon);
-            obj.setVisible(true);
+        if(jList2.isSelectionEmpty()){
+            JOptionPane.showMessageDialog(null, "Chưa chọn gì!");
         }else{
-            JOptionPane.showMessageDialog(null, "Tải về để xem");
-        }
+            Message data = (Message) dlm2.getElementAt(jList2.getSelectedIndex());
+            String str = data.getType();
+            StringBuilder sb = new StringBuilder(str); //.jpg
+            sb.reverse();
+            str = sb.toString();
+            if(str.startsWith("gpj.") || str.startsWith("gnp.") || str.startsWith("gepj.")){
+                ShowImage obj = new ShowImage(this, true);
+                ImageIcon icon = new ImageIcon(data.getMess());
+                obj.set(icon);
+                obj.setVisible(true);
+            }else{
+                JOptionPane.showMessageDialog(null, "Tải về để xem");
+            }
+         }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     /**
@@ -460,6 +485,7 @@ public class ClientView extends javax.swing.JFrame {
     private javax.swing.JDialog jDialog3;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabelGreeting;
     private javax.swing.JList<String> jList1;
     private javax.swing.JList<String> jList2;

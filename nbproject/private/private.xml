@@ -2,6 +2,13 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/D:/Users/Long%20Coi/Documents/NetBeansProjects/ChatTCP/src/view/ServerView.java</file>
+            <file>file:/D:/Users/Long%20Coi/Documents/NetBeansProjects/ChatTCP/src/view/LoginView.java</file>
+            <file>file:/D:/Users/Long%20Coi/Documents/NetBeansProjects/ChatTCP/src/ClientThread/ReadMessage.java</file>
+            <file>file:/D:/Users/Long%20Coi/Documents/NetBeansProjects/ChatTCP/src/ServerThread/CheckUserThread.java</file>
+            <file>file:/D:/Users/Long%20Coi/Documents/NetBeansProjects/ChatTCP/src/view/ClientView.java</file>
+            <file>file:/D:/Users/Long%20Coi/Documents/NetBeansProjects/ChatTCP/src/ServerThread/ReadMessageThread.java</file>
+        </group>
     </open-files>
 </project-private>
