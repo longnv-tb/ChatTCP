@@ -41,22 +41,20 @@ public class ReadMessageThread extends Thread{
                 Message message = (Message) ois.readObject();
                 /*yêu cầu gửi cá nhân*/
                 if(!"".equals(message.getUserNameOfReceiver())){
-                    new ObjectOutputStream(((Socket)serverView.getClientCollection().get(message.getUserNameOfReceiver())).getOutputStream())
+                        new ObjectOutputStream(((Socket)serverView.getClientCollection().get(message.getUserNameOfReceiver())).getOutputStream())
                             .writeObject(message);
                 }else{
-                    Set setUserName = serverView.getClientCollection().keySet();
-                    Iterator iterator = setUserName.iterator();
+                    Set setUserName = serverView.getClientCollection().keySet(); /*get user name trong collection*/
+                    Iterator iterator = setUserName.iterator(); /*duyệt từng username*/
                     while(iterator.hasNext()){
                         String userName = (String) iterator.next();
                         if(!userName.equalsIgnoreCase(sender.getUserName())){
-                            new ObjectOutputStream(((Socket)serverView.getClientCollection().get(userName)).getOutputStream()).writeObject(message);
+                                new ObjectOutputStream(((Socket)serverView.getClientCollection()
+                                    .get(userName)).getOutputStream()).writeObject(message);
                         }
                     }
-                    
                 }
-            } catch (IOException ex) {
-                Logger.getLogger(ReadMessageThread.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ClassNotFoundException ex) {
+            } catch (IOException | ClassNotFoundException ex) {
                 Logger.getLogger(ReadMessageThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }

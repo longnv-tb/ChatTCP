@@ -2,10 +2,10 @@ package view;
 
 import ClientThread.ReadMessage;
 import java.awt.HeadlessException;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -25,7 +25,7 @@ import model.User;
  * @author Long Coi
  */
 public class ClientView extends javax.swing.JFrame {
-    private final Socket socket;
+    private Socket socket;
     private final User user; /*sender*/
     private final DefaultListModel dlm1;
     private DefaultListModel dlm2;
@@ -36,22 +36,12 @@ public class ClientView extends javax.swing.JFrame {
      * Creates new form ClientView
      * @param user
      * @param s
+     * @param ois
+     * @param oos
      * @throws java.io.IOException
      */
     public ClientView(User user, Socket s, ObjectInputStream ois, ObjectOutputStream oos) throws IOException {
         initComponents();
-        this.addWindowListener(new WindowAdapter(){
-            @Override
-            public void windowClosing(WindowEvent e){
-                try {
-                    socket.close();
-                    socket.shutdownInput();
-                    socket.shutdownOutput();
-                } catch (IOException ex) {
-                    Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
         this.user = user;
         this.socket = s;
         this.ois = ois;
@@ -62,6 +52,16 @@ public class ClientView extends javax.swing.JFrame {
         this.dlm2 = new DefaultListModel();
         jList2.setModel(dlm2);
         new ReadMessage(socket, ClientView.this).start();
+//        this.addWindowListener(new WindowAdapter(){
+//            @Override
+//            public void windowClosing(WindowEvent e){
+//                try {
+//                    socket.close();
+//                } catch (IOException ex) {
+//                    Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        });
     }
 
     public User getUser() {
@@ -192,6 +192,12 @@ public class ClientView extends javax.swing.JFrame {
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField1KeyPressed(evt);
+            }
+        });
+
         jButton1.setText("Gửi");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -202,6 +208,11 @@ public class ClientView extends javax.swing.JFrame {
         jSeparator1.setForeground(new java.awt.Color(51, 0, 51));
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
+        jList1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jList1MouseClicked(evt);
+            }
+        });
         jList1.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
                 jList1ValueChanged(evt);
@@ -256,22 +267,23 @@ public class ClientView extends javax.swing.JFrame {
                             .addComponent(jButton5)
                             .addComponent(jButton4)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jLabel1)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jLabelGreeting)
-                                    .addGap(12, 12, 12))
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton1)))
-                        .addGap(8, 8, 8)
+                                .addComponent(jButton3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton1)
+                                .addGap(18, 18, 18))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabelGreeting)
+                                        .addGap(12, 12, 12))
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(8, 8, 8)))
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -280,11 +292,10 @@ public class ClientView extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(55, 55, 55)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap())))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addGap(185, 185, 185))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButton4, jButton5});
@@ -397,8 +408,12 @@ public class ClientView extends javax.swing.JFrame {
                     jTextArea1.append("<You to All>: "+f.getName()+"\n");
                 }
             }
-        }catch(HeadlessException | IOException e){
+        }catch(HeadlessException e){
             e.printStackTrace();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -443,6 +458,44 @@ public class ClientView extends javax.swing.JFrame {
             }
          }
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
+        // TODO add your handling code here:
+//        if(evt.getClickCount() == 2){
+//            new PersonalChatView(jList1.getSelectedValue()).setVisible(true);
+//            System.out.println("Hello world");
+//        }
+    }//GEN-LAST:event_jList1MouseClicked
+
+    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+            if(jList1.isSelectionEmpty()){
+            JOptionPane.showMessageDialog(null, "Chọn người để gửi");
+            return;
+        }
+        try {
+            String message = jTextField1.getText().trim();
+            String userName = receiver;
+            Message mess = new Message();
+            mess.setType("text");
+            mess.setUserNameOfReceiver(userName);
+            mess.setUserNameOfSender(user.getUserName());
+            mess.setMess(message.getBytes());
+            oos.writeObject(mess);
+            oos.flush();
+            if(!userName.isEmpty()){
+                jTextField1.setText("");
+                jTextArea1.append("<You to "+userName+">: "+message+"\n");
+            }else{
+                jTextField1.setText("");
+                jTextArea1.append("<You to All>: "+message+"\n");
+            }
+        }catch (IOException ex) {
+                Logger.getLogger(ClientView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        }
+    }//GEN-LAST:event_jTextField1KeyPressed
 
     /**
      * @param args the command line arguments
